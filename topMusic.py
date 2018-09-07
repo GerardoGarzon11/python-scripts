@@ -1,9 +1,11 @@
 #! python3
 #  topMusic.py
 
-# TODO: Request
-# TODO: Get information
-# TODO: Print it
+# TODO: Define method for requests
+# TODO: Get play count for each artist
+# TODO: Length of for loop should depend on length of chart list
+# TODO: Configuration file for fast load (not having to write username again and again)
+# TODO: Clean code (it's messy)
 
 from datetime import date
 from datetime import timedelta
