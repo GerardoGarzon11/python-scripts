@@ -2,7 +2,6 @@
 #  topMusic.py
 
 # TODO: Define method for requests
-# TODO: Get play count for each artist
 # TODO: Length of for loop should depend on length of chart list
 # TODO: Configuration file for fast load (not having to write username again and again)
 # TODO: Clean code (it's messy)
@@ -56,10 +55,24 @@ def getTimeRange(period):
 		timeRange['previous']['start'] = str(year - 1) + "-01-01"
 		timeRange['previous']['end'] = str(year - 1) + "-12-31"
 
-	print(timeRange)
-
 def getURL(username):
 	return baseURL + username + selectionURL['artists'] + str(timeRange['current']['start']) + toURL + str(timeRange['current']['end'])
+
+def performRequest(url):
+	res = requests.get(url)
+	res.raise_for_status()
+	soup = bs4.BeautifulSoup(res.text)
+	chartlist = soup.select('#top-artists-section table tbody tr ')
+
+	print(chartlist[0].select('.chartlist-index')[0].getText())
+
+	# length = 0 OR charlist length if < 10
+
+	for x in range(0, 10):
+		# position - name
+		print(str(x+1) + " - " + chartlist[x].select('.link-block-target')[0].getText())
+		print("Plays: " + chartlist[x].select('.countbar-bar-value-wrapper')[0].getText().strip())
+		# number of plays
 
 # TODO: Load configuration
 
@@ -76,11 +89,4 @@ getTimeRange(period)
 # for year (get top 10)
 
 url = getURL(username)
-res = requests.get(url)
-res.raise_for_status()
-soup = bs4.BeautifulSoup(res.text)
-chartlist = soup.select('#top-artists-section table tbody tr ')
-print(chartlist[0].select('.chartlist-index')[0].getText())
-
-for x in range(0, 10):
-	print(str(x+1) + " - " + chartlist[x].select('.link-block-target')[0].getText())
+performRequest(url)
