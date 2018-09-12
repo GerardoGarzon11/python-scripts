@@ -2,7 +2,6 @@
 #  topMusic.py
 
 # TODO: Define method for requests
-# TODO: Length of for loop should depend on length of chart list
 # TODO: Configuration file for fast load (not having to write username again and again)
 # TODO: Clean code (it's messy)
 
@@ -64,15 +63,14 @@ def performRequest(url):
 	soup = bs4.BeautifulSoup(res.text)
 	chartlist = soup.select('#top-artists-section table tbody tr ')
 
-	print(chartlist[0].select('.chartlist-index')[0].getText())
+	if len(chartlist) <= 10:
+		rangeLength = len(chartlist)
+	else:
+		rangeLength = 10
 
-	# length = 0 OR charlist length if < 10
-
-	for x in range(0, 10):
-		# position - name
+	for x in range(0, rangeLength):
 		print(str(x+1) + " - " + chartlist[x].select('.link-block-target')[0].getText())
 		print("Plays: " + chartlist[x].select('.countbar-bar-value-wrapper')[0].getText().strip())
-		# number of plays
 
 # TODO: Load configuration
 
