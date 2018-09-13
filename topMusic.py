@@ -13,9 +13,9 @@ import bs4
 
 baseURL = "https://www.last.fm/user/"
 selectionURL = {
-	"artists": "/library/artists?from=",
-	"albums": "/library/albums?from=",
-	"tracks": "/library/tracks?from="
+	"1": {"url": "/library/artists?from=", "chart": "artists"},
+	"2": {"url": "/library/albums?from=", "chart": "albums"},
+	"3": {"url": "/library/tracks?from=", "chart": "tracks"},
 }
 toURL = "&to="
 
@@ -54,14 +54,14 @@ def getTimeRange(period):
 		timeRange['previous']['start'] = str(year - 1) + "-01-01"
 		timeRange['previous']['end'] = str(year - 1) + "-12-31"
 
-def getURL(username):
-	return baseURL + username + selectionURL['artists'] + str(timeRange['current']['start']) + toURL + str(timeRange['current']['end'])
+def getURL(username, item):
+	return baseURL + username + selectionURL[item]['url'] + str(timeRange['current']['start']) + toURL + str(timeRange['current']['end'])
 
 def performRequest(url):
 	res = requests.get(url)
 	res.raise_for_status()
 	soup = bs4.BeautifulSoup(res.text)
-	chartlist = soup.select('#top-artists-section table tbody tr ')
+	chartlist = soup.select('#top-' + selectionURL[item]['chart'] + '-section table tbody tr ')
 
 	if len(chartlist) <= 10:
 		rangeLength = len(chartlist)
@@ -80,11 +80,14 @@ username = input()
 print('Which period do you want to analyze? [W/M/Y]')
 period = input()
 
+print('What do you want to analyze? [(1) Artists, (2) Albums or (3) Tracks]')
+item = input()
+
 getTimeRange(period)
 
 # for week (get top 10)
 # for month (get top 10)
 # for year (get top 10)
 
-url = getURL(username)
+url = getURL(username, item)
 performRequest(url)
