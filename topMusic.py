@@ -57,8 +57,19 @@ def getTimeRange(period):
 def getURL(username, item):
 	return baseURL + username + selectionURL[item]['url'] + str(timeRange['current']['start']) + toURL + str(timeRange['current']['end'])
 
+def getAllTimeURL(username, item):
+	if item == '1':
+		url = "/library/artists"
+	elif item == '2':
+		url = "/library/albums"
+	else:
+		url = "/library/tracks"
+
+	return baseURL + username + url + "?date_preset=ALL"
+
 def performRequest(url):
 	res = requests.get(url)
+	print(url)
 	res.raise_for_status()
 	soup = bs4.BeautifulSoup(res.text)
 	chartlist = soup.select('#top-' + selectionURL[item]['chart'] + '-section table tbody tr ')
@@ -77,7 +88,7 @@ def performRequest(url):
 print('Username:')
 username = input()
 
-print('Which period do you want to analyze? [W/M/Y]')
+print('Which period do you want to analyze? [W/M/Y/A]')
 period = input()
 
 print('What do you want to analyze? [(1) Artists, (2) Albums or (3) Tracks]')
@@ -88,6 +99,9 @@ getTimeRange(period)
 # for week (get top 10)
 # for month (get top 10)
 # for year (get top 10)
+if period == 'A' or period == 'a':
+	url = getAllTimeURL(username, item)
+else:
+	url = getURL(username, item)
 
-url = getURL(username, item)
 performRequest(url)
