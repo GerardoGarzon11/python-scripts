@@ -54,8 +54,11 @@ def getTimeRange(period):
 		timeRange['previous']['start'] = str(year - 1) + "-01-01"
 		timeRange['previous']['end'] = str(year - 1) + "-12-31"
 
-def getURL(username, item):
-	return baseURL + username + selectionURL[item]['url'] + str(timeRange['current']['start']) + toURL + str(timeRange['current']['end'])
+def getURL(username, item, current):
+	if current:
+		return baseURL + username + selectionURL[item]['url'] + str(timeRange['current']['start']) + toURL + str(timeRange['current']['end'])
+	else:
+		return baseURL + username + selectionURL[item]['url'] + str(timeRange['previous']['start']) + toURL + str(timeRange['previous']['end'])
 
 def getAllTimeURL(username, item):
 	if item == '1':
@@ -91,6 +94,14 @@ username = input()
 print('Which period do you want to analyze? [W/M/Y/A]')
 period = input()
 
+if period != 'A' or period != 'a':
+	print('Current period or previous? [C/P]')
+	current = input()
+	if current == 'C' or current == 'C':
+		current = True
+	else:
+		current = False
+
 print('What do you want to analyze? [(1) Artists, (2) Albums or (3) Tracks]')
 item = input()
 
@@ -102,6 +113,6 @@ getTimeRange(period)
 if period == 'A' or period == 'a':
 	url = getAllTimeURL(username, item)
 else:
-	url = getURL(username, item)
+	url = getURL(username, item, current)
 
 performRequest(url)
